@@ -135,12 +135,27 @@ int main() {
     return 0;
 }
 
+void writeToFile(const char *filename, int arr[], int n) {
+    FILE *file = fopen(filename, "a"); // Open in append mode
+    if (file == NULL) {
+        perror("Error opening output file");
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        fprintf(file, "%d ", arr[i]); // Write each element separated by a space
+    }
+    fprintf(file, "\n"); // Add a newline after writing the array
+    fclose(file);
+}
+
 // Function to calculate the time taken by a sorting algorithm using gettimeofday()
 double calculateTime(void (*sortFunc)(int[], int), int arr[], int n) {
     struct timeval start, end;
     gettimeofday(&start, NULL);
     sortFunc(arr, n);
     gettimeofday(&end, NULL);
+    writeToFile("sorted_output.txt", arr, n);
     return (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec) / 1000000.0;
 }
 
@@ -150,6 +165,7 @@ double calculateTimeMergeQuick(void (*sortFunc)(int[], int, int), int arr[], int
     gettimeofday(&start, NULL);
     sortFunc(arr, left, right);
     gettimeofday(&end, NULL);
+    writeToFile("sorted_output.txt", arr, right - left + 1);
     return (double)(end.tv_sec - start.tv_sec) + (double)(end.tv_usec - start.tv_usec) / 1000000.0;
 }
 
